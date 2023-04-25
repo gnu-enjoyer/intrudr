@@ -1,0 +1,18 @@
+Intrudr provides binary function instrusion through procedure linkage table interposition for dynamic instrumentation of ELF files
+
+Candidate for most legible functional template metaprogram in C++20 (2023)
+
+Use cases:
+    - Locating pathological allocations in perf critical paths
+    - Security auditing non-free software
+    - Runtime PLT symbol interdiction
+
+Build:
+    git clone https://github.com/gnu-enjoyer/intrudr
+    cd intrudr
+    make
+
+Usage:
+    echo 'int main() {char *buffer = new char[451];}' > example.cpp 
+    g++ example.cpp
+    LD_PRELOAD=./intrudr.so ./a.out

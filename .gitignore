@@ -1,0 +1,6 @@
+*
+!/.gitignore
+!/README
+!/Makefile
+!src/
+!src/main.cpp
