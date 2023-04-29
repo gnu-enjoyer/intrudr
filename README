@@ -1,6 +1,6 @@
-Intrudr provides binary function instrusion through procedure linkage table interposition for dynamic instrumentation of ELF files
+Intrudr provides binary function intrusion through procedure linkage table interposition for dynamic instrumentation of ELF files
 
-Candidate for most legible functional template metaprogram in C++20 (2023)
+Candidate for most legible functional template metaprogram (2023)
 
 Use cases:
     - Locating pathological allocations in perf critical paths
@@ -16,3 +16,4 @@ Usage:
     echo 'int main() {char *buffer = new char[451];}' > example.cpp 
     g++ example.cpp
     LD_PRELOAD=./intrudr.so ./a.out
+    

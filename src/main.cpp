@@ -1,9 +1,11 @@
+#include <dlfcn.h>
+
 #include <cstddef>
 #include <cstdio>
-#include <dlfcn.h>
 #include <functional>
 
-template <typename FnSignature> FnSignature& HookFn(const char* func_name) {
+template <typename FnSignature>
+auto& HookFn(const char* func_name) {
   static FnSignature real_func = nullptr;
   if (!real_func) {
     real_func = reinterpret_cast<FnSignature>(dlsym(RTLD_NEXT, func_name));
@@ -13,7 +15,7 @@ template <typename FnSignature> FnSignature& HookFn(const char* func_name) {
 
 template <typename Hook, typename Real>
 auto CreateHookedFunction(Hook&& hook, Real&& real_func) {
-  return [&](auto&&... args) -> decltype(auto) {
+  return [&](auto&&... args) {
     hook(args...);
     return real_func(std::forward<decltype(args)>(args)...);
   };
@@ -26,12 +28,12 @@ auto HookAndInvoke(const char* func_name, HookArgs&&... hook_args) {
 }
 
 extern "C" void* malloc(size_t size) noexcept {
-  return HookAndInvoke<void* (*)(size_t)>("malloc", [&](size_t size) {
+  return HookAndInvoke<void* (*)(size_t)>("malloc", [](size_t size) {
     fprintf(stderr, "malloc(%zu)\n", size);
   })(size);
 }
 
 extern "C" void free(void* ptr) noexcept {
   HookAndInvoke<void (*)(void*)>(
-      "free", [&](void* ptr) { fprintf(stderr, "free(%p)\n", ptr); })(ptr);
+      "free", [](void* ptr) { fprintf(stderr, "free(%p)\n", ptr); })(ptr);
 }
